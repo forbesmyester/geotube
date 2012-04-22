@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>dojo amd test</title>
+    <script>
+        dojoConfig= {
+            has: {
+                "dojo-firebug": true,
+                "dojo-debug-messages": true,
+            },
+            parseOnLoad: false,
+            async: true
+        };
+    </script>
+    <script src="./javascript/dojo/dojo.js"></script>
+</head>
+
+<body>
+
+<h1 id="greeting">Hello</h1>
+
+</body>
+
+    <canvas width="640" height="480" id="canvas"></canvas>
+
+    <script type="text/javascript">
+        require(['com/keyboardwritescode/geotube','dojo/_base/xhr'],function(geotube,xhr) {
+            var drawStations = function(tStations) {
+                var canvas = document.getElementById('canvas');
+                var twod = canvas.getContext('2d');
+                twod.fillStyle = 'red';
+                for (var length=tStations.length,i=0;i<length;i++) {
+                    var tStation = tStations[i];
+                    twod.strokeRect(tStation.x,tStation.y,2,2);
+                }
+            }
+            var processStationData = function(stationData) {
+                var tStations = geotube.stationCoordinates(
+                    geotube.buildStationsFromCsv(stationData),
+                    {'w':640,'h':480}
+                );
+                drawStations(tStations);
+            };
+            xhr.get({
+                'url':'data.csv',
+                'load':processStationData
+            });
+        });
+    </script>
+
+</html>
